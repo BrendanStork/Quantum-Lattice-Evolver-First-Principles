@@ -1,17 +1,23 @@
 import numpy as np
 from .circuit import Quantum_Circuit
 from scipy import linalg
+from .gates import GATES
 
 
-def op_exact_evolve(H, t):
-    return linalg.expm(-1j*H*t)
+def string_to_operator(pauli_string):
+    operator = GATES[pauli_string[0]] # Builds operator
+    for p in pauli_string[1:]:
+        operator = np.kron(operator, GATES[p])
+    return operator
 
-def exact_evolve(qc0, H, t):
-    U = op_exact_evolve(H, t)
+def exact_evolve(qc0, basis, time):
+    H = 0*1j
+    for op, coeff in basis.items():
+        H += coeff * string_to_operator(op)
+    U = linalg.expm(-1j*H*time)
     new_state = qc0
     new_state.state = U @ qc0.state
     return new_state
-
 
 ######GENERAL N QUBIT TROTTER#########
 

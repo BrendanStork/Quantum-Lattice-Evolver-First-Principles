@@ -1,196 +1,261 @@
-# Quantum Hamiltonian Simulation Framework
+# Quantum Lattice Simulation Framework
 
-A modular numpy and scipy-based Python framework for simulating quantum many-body dynamics using exact and Trotterized evolution of generalized Pauli-string Hamiltonians.
+A lightweight quantum simulation framework built from scratch in Python (NumPy + SciPy) for studying lattice Hamiltonian dynamics using both exact time evolution and digital (Trotterized) quantum simulation.
 
-The framework supports arbitrary \(N\)-qubit systems, configurable Hamiltonian construction, expectation-value analysis, fidelity benchmarking, and Trotter error characterization.
-
----
-
-# Features
-
-## Generalized Pauli-String Hamiltonians
-
-Construct arbitrary Hamiltonians in the Pauli basis:
-
-H = Σᵢ cᵢPᵢ
-
-Example:
-
-```python
-basis = create_basis(
-    XX = 1.0,
-    YY = 1.0,
-    ZZ = 0.5,
-    IX = -0.2
-)
-```
-
-Supports:
-- Arbitrary qubit count
-- Arbitrary Pauli strings
-- Validation/error checking
-- Dense Hamiltonian generation
+This project bridges quantum computing and condensed matter physics by providing tools to construct Hamiltonians, simulate time evolution, and compute physical observables on lattice systems such as the transverse-field Ising model.
 
 ---
 
-# Time Evolution
+# Overview
 
-## Exact Evolution
+This framework implements a Hamiltonian-first approach to quantum simulation. Instead of focusing purely on circuit abstractions, it represents quantum dynamics in terms of physically meaningful Pauli-string Hamiltonians defined on lattice geometries.
 
-Implements exact unitary evolution:
+The framework supports:
 
-|ψ(t)⟩ = e^(-iHt)|ψ(0)⟩
+- Exact quantum time evolution via matrix exponentiation
+- Digital quantum simulation via Trotter decomposition
+- Arbitrary Pauli-string Hamiltonians
+- 2D lattice model construction
+- Observable tracking (magnetization, correlations)
+- Benchmarking of exact vs approximate dynamics
 
-using matrix exponentiation.
-
----
-
-## Trotterized Evolution
-
-Implements generalized product-formula decomposition for arbitrary Pauli-string Hamiltonians.
-
-Features include:
-- Automatic basis rotations
-- Generalized CNOT ladder construction
-- Arbitrary \(N\)-qubit support
-- Configurable Trotter step count
+It is fully implemented using NumPy and SciPy without reliance on external quantum SDKs.
 
 ---
 
-# Observables & Diagnostics
-
-## Expectation Values
-
-Compute expectation values of arbitrary Pauli operators:
-
-```python
-qc.expectation_value('ZZXI')
-```
-
-Supports:
-- Local observables
-- Multi-qubit correlators
-- General Pauli-string operators
-
----
-
-## Fidelity Analysis
-
-Compute state fidelity between:
-- Exact evolution
-- Trotterized evolution
-
-for benchmarking Trotter accuracy.
-
----
-
-## Error Characterization
-
-Includes utilities for:
-- Absolute error analysis
-- Log-scale error visualization
-- Trotter convergence analysis
-- Fidelity evolution over time
-
----
-
-# Example
-
-## Construct Hamiltonian
-
-```python
-basis = create_basis(
-    XX = 1,
-    YY = 1,
-    ZZ = 1
-)
-```
-
----
-
-## Compute Time Evolution
-
-```python
-results = expectation_vals_vs_time(
-    qc,
-    basis,
-    expectation_operator = 'ZZ',
-    trotter_steps = 30,
-    time = 20
-)
-```
-
----
-
-## Plot Observables
-
-```python
-plt.figure()
-
-plot_expectation(
-    results,
-    label = '<ZZ>'
-)
-
-plt.legend()
-plt.show()
-```
-
----
-
-# Project Structure
-
-```text
-project/
-│
-├── circuit.py
-├── evolution.py
-├── hamiltonian.py
-├── expectation_values.py
-├── plotting.py
-│
-├── examples/
-│   └──run_time_simulation.py
-├── figures/
-└── README.md
-```
-
----
-
-# Core Components
-
-## Hamiltonian Construction
-Generation of dense Hamiltonians from arbitrary Pauli-string expansions.
+# Key Features
 
 ## Quantum Circuit Simulation
-Gate-based statevector simulation for arbitrary qubit counts.
+- Statevector-based quantum simulation
+- Single-qubit gates: X, Y, Z, H, S, T, rotations
+- Multi-qubit CNOT implementation (bitwise optimized)
+- Circuit state copying for independent evolution branches
 
-## Product-Formula Dynamics
-Generalized Trotter evolution for noncommuting Hamiltonian terms.
+## Hamiltonian Construction
+- Arbitrary Pauli-string Hamiltonians
+- Automatic validation of operator structure
+- Conversion from symbolic operators to matrix form
+- Transverse-field Ising Hamiltonian generator
 
-## Observable Analysis
-Expectation-value and fidelity computation utilities.
+## Lattice Models
+- 2D square lattice generator (open boundary conditions)
+- Bond-based interaction construction
+- Flexible mapping from lattice sites to qubits
+
+## Time Evolution
+- Exact evolution:
+  \[
+  U(t) = e^{-iHt}
+  \]
+- Trotterized evolution via operator decomposition
+- Configurable Trotter step resolution
+
+## Observables
+- Magnetization along X, Y, Z
+- Two-point correlation functions
+- General expectation value interface
+- Time-dependent observable tracking
+
+## Visualization
+- Exact vs Trotter comparison plots
+- Multi-panel subplot support
+- Matplotlib wrapper for consistent scientific visualization
 
 ---
 
-# Dependencies
+# Example: Transverse Field Ising Model (2D)
 
-- NumPy
-- SciPy
-- Matplotlib
+```python
+bonds = squarelattice(Nx=3, Ny=2)
+
+basis = transverse_ising_hamiltonian(
+    bonds,
+    J=1,
+    h=1
+)
+
+qc = Quantum_Circuit(6)
+qc.x(0)  # initial excitation
+
+obs_z = magnetization(axis='Z')
+
+t, mz_exact = observable_vs_time(
+    qc,
+    basis,
+    time=15,
+    timesteps=100,
+    method='exact',
+    observable=obs_z
+)
+
+t, mz_trotter = observable_vs_time(
+    qc,
+    basis,
+    time=15,
+    timesteps=100,
+    method='trotter',
+    trotter_steps=20,
+    observable=obs_z
+)
+
+````markdown
+# Example Output
+
+The framework produces time-dependent quantum dynamics that can be directly compared between exact and approximate evolution methods.
+
+## Magnetization Dynamics (Exact vs Trotter)
+
+> Insert figure below:
+
+![Magnetization Dynamics](figures/square_tfim_magnetization_exact_vs_trotter.png)
+
+Expected results include:
+
+- oscillatory magnetization dynamics
+- convergence of Trotter simulation toward the exact solution as the number of Trotter steps increases
+- clear separation between approximation regimes
 
 ---
 
-# Future Extensions
+# Design Philosophy
+
+This framework is built around a Hamiltonian-centric abstraction rather than a purely circuit-centric model.
+
+Key principles include:
+
+## 1. Physics-first representation
+
+Hamiltonians are represented explicitly as sums of Pauli strings, preserving physical interpretability.
+
+## 2. Dual evolution modes
+
+Both exact and Trotterized evolution are supported within a unified interface for benchmarking and analysis.
+
+## 3. Modular observables
+
+Physical observables are implemented as composable functions acting on quantum states.
+
+## 4. Separation of concerns
+
+- lattices define geometry
+- Hamiltonians define physics
+- circuits define state evolution
+- observables define measurements
+
+## 5. Educational transparency
+
+All operations are implemented explicitly using NumPy and SciPy for clarity rather than black-box optimization.
+
+---
+
+# Limitations
+
+This implementation is educational and exploratory in nature and has several limitations.
+
+## Computational scaling
+
+- statevector simulation scales exponentially with qubit number
+- matrix-based Hamiltonian exponentiation becomes expensive beyond approximately 16–20 qubits
+
+## Missing optimizations
+
+- no sparse matrix representations
+- no tensor network (MPS) compression
+- no GPU acceleration
+
+## Physics extensions not yet implemented
+
+- fermionic Hamiltonians (Hubbard model)
+- Jordan-Wigner transformation
+- entanglement entropy
+- structure factors in momentum space
+
+---
+
+# Future Work
 
 Planned extensions include:
-- Higher-order Suzuki-Trotter formulas
-- Sparse-operator support
-- Jordan-Wigner transformations
-- Fermionic Hamiltonians
-- Hubbard-model simulation
-- Tensor-network integration
+
+## Physics Models
+
+- Heisenberg spin models
+- Fermi-Hubbard model
+- fermionic mappings (Jordan-Wigner)
+
+## Advanced Observables
+
+- entanglement entropy
+- structure factors
+- momentum-space correlations
+- fidelity and Loschmidt echo
+
+## Performance Improvements
+
+- sparse operator representations
+- cached Hamiltonian exponentiation
+- tensor network backend (MPS/DMRG-style simulation)
 - GPU acceleration
+
+## Software Architecture
+
+- full package modularization
+- testing suite (pytest)
+- CI integration
+- benchmarking suite
+
+---
+
+# Project Structure (Suggested)
+
+```text
+quantum_sim/
+├── circuits.py
+├── evolution.py
+├── hamiltonians.py
+├── lattices.py
+├── observables.py
+├── plotting.py
+└── operators.py
+
+examples/
+├── tfim_demo.py
+└── trotter_comparison.py
+
+figures/
+└── square_tfim_magnetization_exact_vs_trotter.png
+````
+
+---
+
+# Installation
+
+```bash
+git clone <your-repo-url>
+cd quantum-lattice-sim
+pip install numpy scipy matplotlib
+```
+
+---
+
+# Requirements
+
+* Python 3.9+
+* NumPy
+* SciPy
+* Matplotlib
+
+---
+
+# Author Notes
+
+This project was developed as an independent exploration of quantum many-body simulation, combining concepts from quantum computing and condensed matter physics.
+
+It focuses on:
+
+* explicit implementation of quantum evolution algorithms
+* physically meaningful observables
+* modular scientific computing design
+* transparency of numerical methods
 
 ---
 

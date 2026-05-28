@@ -1,6 +1,6 @@
 # Quantum Lattice Simulation Framework
 
-A lightweight quantum simulation framework built from scratch in Python (NumPy + SciPy) for studying lattice Hamiltonian dynamics using both exact time evolution and digital (Trotterized) quantum simulation.
+A quantum simulation framework built from scratch in Python (NumPy + SciPy) for studying lattice Hamiltonian dynamics using both exact time evolution and digital (Trotterized) quantum simulation.
 
 This project bridges quantum computing and condensed matter physics by providing tools to construct Hamiltonians, simulate time evolution, and compute physical observables on lattice systems such as the transverse-field Ising model.
 
@@ -44,9 +44,9 @@ It is fully implemented using NumPy and SciPy without reliance on external quant
 
 ## Time Evolution
 - Exact evolution:
-  \[
+  \
   U(t) = e^{-iHt}
-  \]
+  \
 - Trotterized evolution via operator decomposition
 - Configurable Trotter step resolution
 

@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-from time_simulation.circuit import Quantum_Circuit
-from time_simulation.hamiltonian import general_hamiltonian, squarelattice, transverse_ising_hamiltonian
-from time_simulation.expectation_values import observable_vs_time, magnetization
-from time_simulation.plotting import (
+from src.circuit import Quantum_Circuit
+from src.hamiltonian import general_hamiltonian, squarelattice, transverse_ising_hamiltonian
+from src.expectation_values import observable_vs_time, magnetization
+from src.plotting import (
     	plot_observable
 )
 

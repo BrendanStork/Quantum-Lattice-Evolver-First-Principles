@@ -222,7 +222,7 @@ Planned extensions include:
 # Project Structure (Suggested)
 
 ```text
-quantum_sim/
+src/
 ├── circuits.py
 ├── evolution.py
 ├── hamiltonians.py

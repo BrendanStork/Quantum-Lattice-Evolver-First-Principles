@@ -8,7 +8,7 @@ This project bridges quantum computing and condensed matter physics by providing
 
 # Overview
 
-This project combines low-level circuit-based quantum simulation with a Hamiltonian-centric architecture for quantum many-body dynamics. The framework represents physical systems through Pauli-string Hamiltonians defined on lattice geometries, while also providing explicit gate-level statevector evolution through custom implementations of single-qubit gates, CNOT operations, and Trotterized circuit decompositions.
+The project combines low-level circuit-based quantum simulation with a Hamiltonian-centric architecture for quantum many-body dynamics. The framework represents physical systems through Pauli-string Hamiltonians defined on lattice geometries, while also providing explicit gate-level statevector evolution through custom implementations of single-qubit gates, CNOT operations, and Trotterized circuit decompositions.
 
 Core capabilities include:
 
